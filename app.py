@@ -67,13 +67,11 @@ async def homepage(request):
         length += STEP_LENGTH
 
     if '<|endoftext|>' not in text:
-        return UJSONResponse({'text': '[The text was too long. Please try again]'},
-                             headers=response_header)
+        pattern = '(?:{})(.*?)'.format(prepend)
+    else:
+        pattern = '(?:{})(.*?)(?:{})'.format(prepend, '<|endoftext|>')
 
-    prepend_esc = re.escape(prepend)
-
-    pattern = '(?:{})(.*?)(?:{})'.format(prepend_esc, '<|endoftext|>')
-    trunc_text = re.search(pattern, text)
+    trunc_text = re.search(re.escape(pattern), text)
 
     return UJSONResponse({'text': trunc_text.group(1)},
                          headers=response_header)
