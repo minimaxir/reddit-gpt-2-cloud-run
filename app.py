@@ -47,13 +47,8 @@ async def homepage(request):
         return UJSONResponse({'text': 'ಠ_ಠ'},
                              headers=response_header)
 
-    keyword_list = []
-
-    for keyword in [params['key1'], params['key2'], params['key3']]:
-        if keyword != '':
-            keyword_list.append(re.sub(' ', '-', keyword))
-
-    keywords = " ".join(keyword_list)
+    keywords = " ".join([re.sub(' ', '-', v) for k, v in params
+                         if 'key' in k and v != ''])
 
     prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
     text = prepend + params['prefix']
