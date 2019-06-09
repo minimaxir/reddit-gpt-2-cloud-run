@@ -3,6 +3,22 @@ from starlette.responses import UJSONResponse
 import gpt_2_simple as gpt2
 import uvicorn
 import os
+import re
+
+
+MIN_LENGTH = 50
+MAX_LENGTH = 200
+STEP_LENGTH = 10
+
+INVALID_SUBREDDITS = [
+    "me_irl",
+    "2meirl4meirl",
+    "anime_irl",
+    "furry_irl",
+    "cursedimages",
+    "meirl",
+    "hmmm"
+]
 
 app = Starlette(debug=False)
 
@@ -25,19 +41,46 @@ async def homepage(request):
         return UJSONResponse({'text': ''},
                              headers=response_header)
 
-    text = gpt2.generate(sess,
-                         length=int(params.get('length', 1023)),
-                         temperature=float(params.get('temperature', 0.7)),
-                         top_k=int(params.get('top_k', 0)),
-                         top_p=float(params.get('top_p', 0)),
-                         prefix=params.get('prefix', None),
-                         truncate=params.get('truncate', None),
-                         include_prefix=str(params.get(
-                             'include_prefix', True)).lower() == 'true',
-                         return_as_list=True
-                         )[0]
+    subreddit = params['subreddit'].lower().strip()
 
-    return UJSONResponse({'text': text},
+    if subreddit in INVALID_SUBREDDITS or '<|endoftext|>' in params['prefix']:
+        return UJSONResponse({'text': 'ಠ_ಠ'},
+                             headers=response_header)
+
+    keyword_list = []
+
+    for keyword in [params['key1'], params['key2'], params['key3']]:
+        if keyword != '':
+            keyword_list.append(re.sub(' ', '-', keyword))
+
+    keywords = " ".join(keyword_list)
+
+    prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
+    text = prepend + params['prefix']
+
+    length = MIN_LENGTH
+
+    while '<|endoftext|>' not in text and length < MAX_LENGTH:
+        text = gpt2.generate(sess,
+                             length=length,
+                             temperature=0.7,
+                             top_k=40,
+                             prefix=text,
+                             include_prefix=True,
+                             return_as_list=True
+                             )[0]
+        length += STEP_LENGTH
+
+    if '<|endoftext|>' not in text:
+        return UJSONResponse({'text': '[The text was too long. Please try again]'},
+                             headers=response_header)
+
+    prepend_esc = re.escape(prepend)
+
+    pattern = '(?:{})(.*?)(?:{})'.format(prepend_esc, '<|endoftext|>')
+    trunc_text = re.search(pattern, text)
+
+    return UJSONResponse({'text': trunc_text.group(1)},
                          headers=response_header)
 
 if __name__ == '__main__':
