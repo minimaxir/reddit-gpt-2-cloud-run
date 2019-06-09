@@ -47,7 +47,7 @@ async def homepage(request):
         return UJSONResponse({'text': 'ಠ_ಠ'},
                              headers=response_header)
 
-    keywords = " ".join([re.sub(' ', '-', v) for k, v in params
+    keywords = " ".join([v.replace(' ', '-') for k, v in params
                          if 'key' in k and v != ''])
 
     prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
