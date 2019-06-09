@@ -10,7 +10,7 @@ MIN_LENGTH = 50
 MAX_LENGTH = 200
 STEP_LENGTH = 10
 
-INVALID_SUBREDDITS = [
+INVALID_SUBREDDITS = set([
     "me_irl",
     "2meirl4meirl",
     "anime_irl",
@@ -18,7 +18,7 @@ INVALID_SUBREDDITS = [
     "cursedimages",
     "meirl",
     "hmmm"
-]
+])
 
 app = Starlette(debug=False)
 
@@ -47,7 +47,7 @@ async def homepage(request):
         return UJSONResponse({'text': 'ಠ_ಠ'},
                              headers=response_header)
 
-    keywords = " ".join([v.replace(' ', '-') for k, v in params
+    keywords = " ".join([v.replace(' ', '-').strip() for k, v in params
                          if 'key' in k and v != ''])
 
     prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
