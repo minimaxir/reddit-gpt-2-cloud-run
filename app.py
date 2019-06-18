@@ -49,6 +49,9 @@ async def homepage(request):
 
     subreddit = params['subreddit'].lower().strip()
 
+    if subreddit == '':
+        subreddit = 'askreddit'
+
     if subreddit in INVALID_SUBREDDITS or '<|endoftext|>' in params['prefix']:
         return UJSONResponse({'text': 'ಠ_ಠ'},
                              headers=response_header)
