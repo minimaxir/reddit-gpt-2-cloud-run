@@ -1,6 +1,7 @@
 from starlette.applications import Starlette
 from starlette.responses import UJSONResponse
 import gpt_2_simple as gpt2
+import tensorflow as tf
 import uvicorn
 import os
 import re
@@ -8,7 +9,7 @@ import re
 
 MIN_LENGTH = 50
 MAX_LENGTH = 200
-STEP_LENGTH = 10
+STEP_LENGTH = 50
 
 INVALID_SUBREDDITS = set([
     "me_irl",
@@ -30,9 +31,14 @@ response_header = {
     'Access-Control-Allow-Origin': '*'
 }
 
+generate_count = 0
+
 
 @app.route('/', methods=['GET', 'POST', 'HEAD'])
 async def homepage(request):
+    global generate_count
+    global sess
+
     if request.method == 'GET':
         params = request.query_params
     elif request.method == 'POST':
@@ -55,7 +61,7 @@ async def homepage(request):
 
     length = MIN_LENGTH
 
-    while '<|endoftext|>' not in text and length < MAX_LENGTH:
+    while '<|endoftext|>' not in text and length <= MAX_LENGTH:
         text = gpt2.generate(sess,
                              length=length,
                              temperature=0.7,
@@ -65,6 +71,15 @@ async def homepage(request):
                              return_as_list=True
                              )[0]
         length += STEP_LENGTH
+
+        generate_count += 1
+        if generate_count == 8:
+            # Reload model to prevent Graph/Session from going OOM
+            tf.reset_default_graph()
+            sess.close()
+            sess = gpt2.start_tf_sess(threads=1)
+            gpt2.load_gpt2(sess)
+            generate_count = 0
 
     if '<|endoftext|>' not in text:
         pattern = '(?:{})(.*?)'.format(prepend)
