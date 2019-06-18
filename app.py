@@ -47,20 +47,20 @@ async def homepage(request):
         return UJSONResponse({'text': ''},
                              headers=response_header)
 
-    subreddit = params['subreddit'].lower().strip()
+    subreddit = params.get('subreddit', '').lower().strip()
 
     if subreddit == '':
         subreddit = 'askreddit'
 
-    if subreddit in INVALID_SUBREDDITS or '<|endoftext|>' in params['prefix']:
+    if subreddit in INVALID_SUBREDDITS:
         return UJSONResponse({'text': 'ಠ_ಠ'},
                              headers=response_header)
 
-    keywords = " ".join([v.replace(' ', '-').strip() for k, v in params
+    keywords = " ".join([v.replace(' ', '-').strip() for k, v in params.items()
                          if 'key' in k and v != ''])
 
     prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
-    text = prepend + params['prefix']
+    text = prepend + params.get('prefix', '')
 
     length = MIN_LENGTH
 
@@ -85,9 +85,9 @@ async def homepage(request):
             generate_count = 0
 
     if '<|endoftext|>' not in text:
-        pattern = '(?:{})(.*?)'.format(prepend)
+        pattern = '(?:{})(.*)'.format(prepend)
     else:
-        pattern = '(?:{})(.*?)(?:{})'.format(prepend, '<|endoftext|>')
+        pattern = '(?:{})(.*)(?:{})'.format(prepend, '<|endoftext|>')
 
     trunc_text = re.search(re.escape(pattern), text)
 
