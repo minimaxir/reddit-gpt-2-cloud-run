@@ -84,12 +84,15 @@ async def homepage(request):
             gpt2.load_gpt2(sess)
             generate_count = 0
 
-    if '<|endoftext|>' not in text:
-        pattern = '(?:{})(.*)'.format(prepend)
-    else:
-        pattern = '(?:{})(.*)(?:{})'.format(prepend, '<|endoftext|>')
+    prepend_esc = re.escape(prepend)
+    eot_esc = re.escape('<|endoftext|>')
 
-    trunc_text = re.search(re.escape(pattern), text)
+    if '<|endoftext|>' not in text:
+        pattern = '(?:{})(.*)'.format(prepend_esc)
+    else:
+        pattern = '(?:{})(.*)(?:{})'.format(prepend_esc, eot_esc)
+
+    trunc_text = re.search(pattern, text)
 
     return UJSONResponse({'text': trunc_text.group(1)},
                          headers=response_header)
