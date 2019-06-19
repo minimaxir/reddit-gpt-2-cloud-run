@@ -27,7 +27,7 @@
   }
 
   .gen-border {
-    height: 0.25em;
+    height: 0.125em;
     background-color: #d5d5d5;
   }
 
@@ -108,26 +108,25 @@
               <div class="field">
                   <label class="label">Subreddit</label>
                   <div class="control">
-                    <input id="subreddit" class="input" type="text" placeholder="AskReddit" value="AskReddit">
+                    <input id="subreddit" class="input" type="text" placeholder="AskReddit" value="AskReddit" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                   </div>
-                  <p class="help">Reddit subreddit to generate text from.</p>
+                  <p class="help">Reddit subreddit to generate text from. Not case-sensitive.</p>
                 </div>
                 <div class="field">
-                    <label class="label">Keywords/phrases</label>
+                    <label class="label">Keywords/Phrases</label>
                     <div class="control">
-                      <input id="key1" class="input" type="text">
-                      <input id="key2" class="input" type="text">
-                      <input id="key3" class="input" type="text">
+                      <input id="key1" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                      <input id="key2" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                      <input id="key3" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                     </div>
-                    <p class="help">Keywords/phrases to base the generated title upon. Use case-sensitive inputs for better results.</p>
+                    <p class="help">Keywords/phrases to base the generated title upon. Use case-sensitive inputs for better results. <em>(Optional)</em></p> 
                   </div>
             <div class="field">
               <label class="label">Text Prompt</label>
               <div class="control">
-                <input id="prefix" class="input" type="text"></input>
+                <input id="prefix" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
               </div>
-              <p class="help">Starts the generated Reddit title with the specified text. <em>(if empty, will use a random
-                  starting text)</em></p>
+              <p class="help">Starts the generated Reddit title with the specified text. <em>(Optional: max 100 characters)</em></p>
             </div>
             <div class="buttons">
               <span class="control">
@@ -165,7 +164,7 @@
   <footer class="footer">
     <div class="content has-text-centered">
       <p>
-        Made by <a href="https://minimaxir.com" target="_blank">Max Woolf</a> using <a href="https://github.com/minimaxir/gpt-2-simple" target="_blank"><strong>gpt-2-simple</strong></a>
+        Made by <a href="https://twitter.com/minimaxir" target="_blank">Max Woolf</a> using <a href="https://github.com/minimaxir/gpt-2-simple" target="_blank"><strong>gpt-2-simple</strong></a>
         and <a href="https://github.com/minimaxir/gpt-2-cloud-run" target="_blank"><strong>gpt-2-cloud-run</strong></a>.
          Original GPT-2 model provided by <a
           href="https://openai.com" target="_blank">OpenAI</a>. This website content
@@ -190,7 +189,7 @@
       e.preventDefault();
       $.ajax({
         type: "POST",
-        url: "https://gpt2-default-dstdu4u23a-uc.a.run.app",
+        url: "http://0.0.0.0:8080",
         dataType: "json",
         data: JSON.stringify(getInputValues()),
         beforeSend: function (data) {

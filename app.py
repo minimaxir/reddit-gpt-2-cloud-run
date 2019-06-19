@@ -18,7 +18,8 @@ INVALID_SUBREDDITS = set([
     "furry_irl",
     "cursedimages",
     "meirl",
-    "hmmm"
+    "hmmm",
+    "ooer"
 ])
 
 app = Starlette(debug=False)
@@ -60,7 +61,7 @@ async def homepage(request):
                          if 'key' in k and v != ''])
 
     prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
-    text = prepend + params.get('prefix', '')
+    text = prepend + params.get('prefix', '')[:100]
 
     length = MIN_LENGTH
 
