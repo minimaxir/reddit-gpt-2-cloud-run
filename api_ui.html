@@ -113,6 +113,13 @@
                   <p class="help">Reddit subreddit to generate text from. Not case-sensitive.</p>
                 </div>
                 <div class="field">
+                    <label class="label">Text Prompt</label>
+                    <div class="control">
+                      <input id="prefix" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
+                    </div>
+                    <p class="help">Starts the generated Reddit title with the specified text. <em>(Optional: max 100 characters)</em></p>
+                  </div>
+                <div class="field">
                     <label class="label">Keywords/Phrases</label>
                     <div class="control">
                       <input id="key1" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -121,13 +128,6 @@
                     </div>
                     <p class="help">Keywords/phrases to base the generated title upon. Use case-sensitive inputs for better results. <em>(Optional)</em></p> 
                   </div>
-            <div class="field">
-              <label class="label">Text Prompt</label>
-              <div class="control">
-                <input id="prefix" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
-              </div>
-              <p class="help">Starts the generated Reddit title with the specified text. <em>(Optional: max 100 characters)</em></p>
-            </div>
             <div class="buttons">
               <span class="control">
                 <button type="submit" name="submit" id="generate-text" class="button is-link">
