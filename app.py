@@ -54,7 +54,7 @@ async def homepage(request):
         subreddit = 'askreddit'
 
     if subreddit in INVALID_SUBREDDITS:
-        return UJSONResponse({'text': 'ಠ_ಠ'},
+        return UJSONResponse({'text': '<span style="font-size: 2em">ಠ_ಠ</span>'},
                              headers=response_header)
 
     keywords = " ".join([v.replace(' ', '-').strip() for k, v in params.items()
