@@ -202,7 +202,7 @@
           $('#tutorial').remove();
           var gentext = data.text;
           if ($("#prefix").length & $("#prefix").val() != '') {
-            var pattern = new RegExp('^' + $("#prefix").val(), 'g');
+            var pattern = new RegExp('^' + RegExp.escape($("#prefix").val()), 'g');
             var gentext = gentext.replace(pattern, '<strong>' + $("#prefix").val() + '</strong>');
           }
 
@@ -241,6 +241,10 @@
     });
     return inputs;
   }
+
+  RegExp.escape = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
 
   // https://stackoverflow.com/a/51478809
   function saveAs(uri, filename) {
