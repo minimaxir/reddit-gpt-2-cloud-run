@@ -117,7 +117,7 @@
                     <div class="control">
                       <input id="prefix" class="input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
                     </div>
-                    <p class="help">Starts the generated Reddit title with the specified text. <em>(Optional: max 100 characters)</em></p>
+                    <p class="help">Starts the generated title with the specified text. <em>(Optional: max 100 characters)</em></p>
                   </div>
                 <div class="field">
                     <label class="label">Keywords/Phrases</label>
@@ -128,6 +128,13 @@
                     </div>
                     <p class="help">Keywords/phrases to base the generated title upon. Use case-sensitive inputs for better results. <em>(Optional)</em></p> 
                   </div>
+                  <div class="field">
+                      <label class="label"># Texts Generated</label>
+                      <div class="control">
+                        <input id="numtexts" class="input" type="text" placeholder="1" value="1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
+                      </div>
+                      <p class="help">Number of titles to generate with the given parameters. Titles are generated in parallel. <em>(min 1, max 5)</em></p>
+                    </div>
             <div class="buttons">
               <span class="control">
                 <button type="submit" name="submit" id="generate-text" class="button is-link">
@@ -187,37 +194,40 @@
   $(function () {
     $('#gen-form').submit(function (e) {
       e.preventDefault();
+      var iters =  Math.min(Math.max(Number($("#numtexts").val()), 1), 5);
+      $('#generate-text').addClass("is-loading");
+      $('#generate-text').prop("disabled", true);
+
+      for (x = 0; x < iters; x++) {
       $.ajax({
         type: "POST",
         url: "https://gpt2-reddit-dstdu4u23a-uc.a.run.app/",
         dataType: "json",
         data: JSON.stringify(getInputValues()),
-        beforeSend: function (data) {
-          $('#generate-text').addClass("is-loading");
-          $('#generate-text').prop("disabled", true);
-        },
         success: function (data) {
-          $('#generate-text').removeClass("is-loading");
-          $('#generate-text').prop("disabled", false);
           $('#tutorial').remove();
           var gentext = data.text;
           if ($("#prefix").length & $("#prefix").val() != '') {
             var pattern = new RegExp('^' + RegExp.escape($("#prefix").val()), 'g');
             var gentext = gentext.replace(pattern, '<strong>' + $("#prefix").val() + '</strong>');
           }
-
           var gentext = gentext.replace(/\n\n/g, "<div><br></div>").replace(/\n/g, "<div></div>");
           var html = '<div class=\"gen-box\">' + gentext + '</div><div class="gen-border"></div>';
           $(html).appendTo('#model-output').hide().fadeIn("slow");
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          $('#generate-text').removeClass("is-loading");
-          $('#generate-text').prop("disabled", false);
           $('#tutorial').remove();
           var html = '<div class="gen-box warning">There was an error generating the text! Please try again!</div><div class="gen-border"></div>';
           $(html).appendTo('#model-output').hide().fadeIn("slow");
         }
       });
+      }
+
+      $(document).ajaxStop(function() {
+        $('#generate-text').removeClass("is-loading");
+        $('#generate-text').prop("disabled", false);
+      });
+
     });
     $('#clear-text').click(function (e) {
       $('#model-output').text('')
