@@ -67,7 +67,7 @@ async def homepage(request):
 
     while '<|endoftext|>' not in text and length <= MAX_LENGTH:
         text = gpt2.generate(sess,
-                             length=length,
+                             length=STEP_LENGTH,
                              temperature=0.7,
                              top_k=40,
                              prefix=text,
