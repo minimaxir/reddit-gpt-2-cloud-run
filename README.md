@@ -1,6 +1,6 @@
 # reddit-gpt-2-cloud-run
 
-Code for running a Reddit title generator API using [gpt-2-cloud-run](https://github.com/minimaxir/gpt-2-cloud-run).
+Code for running a Reddit title generator API using [gpt-2-cloud-run](https://github.com/minimaxir/gpt-2-cloud-run). You can play with the API [here](https://minimaxir.com/apps/gpt2-reddit/).
 
 The Reddit data was retrieved using the [BigQuery](https://cloud.google.com/bigquery/) in `query.sql`, which retrieves the Top 2000 posts on each of the Top 2500 subreddits from January 2017 to February 2019 (w/ miscellaneous quality filters).
 
