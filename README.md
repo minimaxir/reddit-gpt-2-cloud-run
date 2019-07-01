@@ -4,7 +4,7 @@ Code for running a Reddit title generator API using [gpt-2-cloud-run](https://gi
 
 The Reddit data was retrieved using the [BigQuery](https://cloud.google.com/bigquery/) in `query.sql`, which retrieves the Top 2000 posts on each of the Top 2500 subreddits from January 2017 to February 2019 (w/ miscellaneous quality filters).
 
-The resulting CSV was encoded using [gpt-2-keyword-generation](https://github.com/minimaxir/gpt-2-keyword-generation) (w/ a 32 vCPU cloud machine as it's a lot of data!), and GPT-2 117M was finetuned on the resulting dataset using [gpt-2-simple](https://github.com/minimaxir/gpt-2-simple).
+The resulting CSV was encoded using [gpt-2-keyword-generation](https://github.com/minimaxir/gpt-2-keyword-generation) (w/ a 32 vCPU cloud machine as it's a lot of data!), pre-encoded for training using [gpt-2-simple](https://github.com/minimaxir/gpt-2-simple)'s `encode_dataset()` function (since otherwise it would take a half hour to start training!) and GPT-2 117M was finetuned on the resulting pre-encoded dataset using [gpt-2-simple](https://github.com/minimaxir/gpt-2-simple).
 
 ## Maintainer/Creator
 
