@@ -60,7 +60,7 @@ async def homepage(request):
     keywords = " ".join([v.replace(' ', '-').strip() for k, v in params.items()
                          if 'key' in k and v != ''])
 
-    prepend = "<|startoftext|>~`{}~^{}~@".format(subreddit, keywords)
+    prepend = "<|startoftext|>~`{}~^{}~".format(subreddit, keywords) + "}"
     text = prepend + params.get('prefix', '')[:100]
 
     length = MIN_LENGTH
